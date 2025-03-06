@@ -1,5 +1,7 @@
 # Hands-On Lab: Orchestration with Apache Airflow
 
+NOTE: These instructions are going to continue to improve over the course of the next week. I would recommend that you only ever access this document via the web so that you always have up-to-date instructions as soon as I push a change or clarification.
+
 In this lab, we’ll build and deploy Airflow data pipelines that pull, transform, and analyze cryptocurrency pricing data. You’ll get very familiar with Airflow DAGs and their tasks, as well as some good practice with Python's API and database integrations. Heck, you'll even get to play with a Slack bot for notifications. By the end, you’ll have several functioning pipelines and some _serious_ Airflow cred. 
 
 But before we jump in, here are some important orienting notes:
