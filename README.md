@@ -6,7 +6,7 @@ In this lab, we’ll build and deploy Airflow data pipelines that pull, transfor
 
 But before we jump in, here are some important orienting notes:
 1. Airflow is a fairly resource-hungry environment to run locally. You should be able to get away with running everything (if a little slowly) by providing 4GB of RAM to Docker, but ideally you should give it more like 8GB. (If your laptop only has 8GB of RAM, I'd recommend setting your docker RAM limit at 4GB.) Whether you do 4GB or 8GB (or more, if you've got enough to spare), I would also set Docker's memory swap settings up to 8+ GB.
-2. As I mentioned in class, it's possible that some of you simply won't be able to get this environment running sucessfuly on your laptop. And that's okay! I've structured the assignment intentionally to allow you to get most of the work done on your own laptop without even needing to launch the full Airflow environment. (All you'll need for the first 50-70% of the assignment is a postgres database container.) So you can forge ahead and get Tasks 1, 2, and 3 finished on your own computer, then you can just do Tasks 4 and 5 in the lab if you need to. (Reach out if you have questions about this.)
+2. As I mentioned in class, it's possible that some of you simply won't be able to get this environment running successfully on your laptop. And that's okay! I've structured the assignment intentionally to allow you to get most of the work done on your own laptop without even needing to launch the full Airflow environment. (All you'll need for the first 50-70% of the assignment is a postgres database container.) So you can forge ahead and get Tasks 1, 2, and 3 finished on your own computer, then you can just do Tasks 4 and 5 in the lab if you need to. (Reach out if you have questions about this.)
 
 Okay. Let's get to it.
 
@@ -14,7 +14,7 @@ Okay. Let's get to it.
 
 ## Task 1: Get the Environment Up and Running
 
-First, let's make sure you have a working development environment. (For help working through this initial setup proces, you might also use the [lecture recording](https://www.dropbox.com/scl/fi/i44rww220il9gpvdmjl8t/2025-03-04-Lecture-14-Airflow-Day-2.mov?rlkey=nchsb7fmscgai4r7ooskdrbko&dl=0) from our in-class walkthrough.)
+First, let's make sure you have a working development environment. (For help working through this initial setup process, you might also use the [lecture recording](https://www.dropbox.com/scl/fi/i44rww220il9gpvdmjl8t/2025-03-04-Lecture-14-Airflow-Day-2.mov?rlkey=nchsb7fmscgai4r7ooskdrbko&dl=0) from our in-class walkthrough.)
 
 ---
 
@@ -43,9 +43,11 @@ If your setup is correct, the tests should run without errors and output the fet
 
 Alright. [Hold on to your butts.](https://www.youtube.com/watch?v=UjvGAYuWSUA). It’s time to start your Airflow environment using `docker compose up -d`, run from the repository folder. In theory, all the necessary containers (including a database and Airflow web UI) will start. This process may take a while, but it shouldn't be extremely long (like more than 10 minutes). If it's taking longer than that (or if you hit errors that you can't resolve), reach out for some help. I don't want you getting stuck here. Again, you can accomplish all of Tasks 2 and 3 even without the full Airflow environment running. So let's chat if necessary.
 
+**IMPORTANT**: If you see the "airflow-init-1" container startup, work for a while, then exit, that is COMPLETELY NORMAL and very much expected. That's the initialization service that starts up, checks some things, and if all is well, shuts itself down.
+
 After the system finishes booting (which _will_ take longer than the terminal will make you think; remember - you can look at the webserver logs and watch for the "Listening on 0.0.0.0:8080" message). Once you see that message, navigate to http://localhost:8080 in your browser. You should see the Airflow web interface, where you can log in with username/password: airflow/airflow. 
 
-In the Airflow UI, you can filter to the `is566` tag to remove all the example DAGs from view, which should make it wasy to locate and open the DAG named “CryptoPrint”. Run the DAG manually (clicking the play button ►). You can then watch it run with glee until you see all the boxes turn dark green, indicating a successful run of all three tasks in the DAG. You should see something similar to my screenshot below.
+In the Airflow UI, you can filter to the `is566` tag to remove all the example DAGs from view, which should make it easy to locate and open the DAG named “CryptoPrint”. Run the DAG manually (clicking the play button ►). You can then watch it run with glee until you see all the boxes turn dark green, indicating a successful run of all three tasks in the DAG. You should see something similar to my screenshot below.
 
 <img src="screenshots/readme_img/first_dag.png"  width="80%">
 
@@ -96,7 +98,7 @@ This next function will calculate the percentage change in price for a given ass
 > [!TIP]
 > For this and all remaining functions we'll be creating, I'm going to provide a function definition "stub" that you can just paste into the `crypto_tasks.py` file. These stubs will clearly define what the function does, what its input parameters are and what it returns at the end. These stubs can be very useful when you're working with ChatGPT to fill in logic, but I'll again remind you that you want to be intentional with your prompts so the logic doesn't get away from you.
 
-The function is designed to be used as a part of the asset price monitoring pipeline to provide some context about how much the price of a given asset has changed since it was last updated in our local system. TO make this comparison, the function will take in an asset_id and price from some newly cleaned asset data (which will be inserted into the asset table in a subsequent task). The function will run a query to get the most recent pricing entry for the asset, do some simple math to calculate the percent change between the price retrieved from the asset table and the new price, and assemble the comparison results in a dict return object. 
+The function is designed to be used as a part of the asset price monitoring pipeline to provide some context about how much the price of a given asset has changed since it was last updated in our local system. To make this comparison, the function will take in an asset_id and price from some newly cleaned asset data (which will be inserted into the asset table in a subsequent task). The function will run a query to get the most recent pricing entry for the asset, do some simple math to calculate the percent change between the price retrieved from the asset table and the new price, and assemble the comparison results in a dict return object. 
 
 > [!TIP]
 > In case it's helpful, here's the math for the percent change: `percent_change = ((new_price - previous_price) / previous_price) * 100`
@@ -126,7 +128,7 @@ def compare_recent_crypto_record(asset_id, new_price, host='postgres'):
     """
 ```
 
-When you have it working, you can add a new test case to the test script to call this function as a part of your test flow. (Note that in order to provide a meaningful comparing, `compare_recent_crypto_record()` needs to be called after cleaning but _before_ loading an asset's pricing information.)
+When you have it working, you can add a new test case to the test script to call this function as a part of your test flow. (Note that in order to provide a meaningful comparison, `compare_recent_crypto_record()` needs to be called after cleaning but _before_ loading an asset's pricing information.)
 
 A successful test should look something like my screenshot below (remember to add some `logging.info()` output in your function so you can see something when it runs).
 
@@ -168,7 +170,7 @@ The function will use the newly cleaned asset data from the API and the result o
 - The newly obtained price, formatted into USD
 - The (formatted) timestamp of your newly obtained asset pricing data
 - The previous price from the comparison, formatted into USD
-- The (formatted) previous timestamp form the comparison
+- The (formatted) previous timestamp from the comparison
 - The percent change (formatted as a percent) from the comparison.
 
 A bland version of a formatted pricing update message might look like this:
@@ -297,7 +299,7 @@ Now we just load the historical data into the `historical_asset_pricing` table i
 Before you rush to write your code, though, I'll just note that there is a composite primary key constraint applied to this `historical_asset_pricing` table (which you can examine in the `sql/01_create_db.sql` script). This is to prevent a lot of duplication for a given asset's pricing history if you happen to run the query for the same asset more than once while testing. This means that you'll need to account for this in your query so that the database doesn't complain about duplicate primary keys.
 
 > [!TIP]
-> Did you know that Postgres doesn't support `UPSERT`s? I didn't either until I write this assignment. Instead you can look into the `ON CONFLICT` functionality.
+> Did you know that Postgres doesn't support `UPSERT`s? I didn't either until I wrote this assignment. Instead you can look into the `ON CONFLICT` functionality.
 
 Got it working? Good. You should produce some nice log messages and see them in the console like my screenshot below when you have the tests running appropriately.
 
@@ -418,7 +420,7 @@ This task involves creating a slightly modified version of the DAG you just buil
 Because this is new (and FUN!), I'll give you some more detailed guidance. Your DAG will have four tasks:
 1. `pull_and_clean_history_task()`: To make this parallel stuff work, you'll need to combine the pulling and cleaning of historical data into a single task. Remember that these tasks are just special functions, so you can absolutely call more than one of our crypto_utils functions within the same task. The task should return the cleaned historical data for the requested `asset_id`.
 2. `load_history_task()`: this is the same task as you used in 5.1 above, so nothing special here. The task should receive cleaned historical data and load it into the table. 
-3. `moving_ave_task()`: This task just runs the `calculate_7_day_moving_average()` function that we tested in Task 3.4. Note that you'll need to import these analaysis functions from the `analysis_functions.py` file to make them available to the DAG.
+3. `moving_ave_task()`: This task just runs the `calculate_7_day_moving_average()` function that we tested in Task 3.4. Note that you'll need to import these analysis functions from the `analysis_functions.py` file to make them available to the DAG.
 4. `annual_vol_task()`: Just like the previous one, this task is just a wrapper for the `calculate_annualized_volatility()` function from `analysis_functions.py`.
 
 Go ahead and establish a logical dependency flow among these functions. Tasks 1 and 2 are pretty straightforward, but obviously the two analysis tasks can't start until the data load has finished. Again you can establish this dependency in a number of ways, but the easiest is probably to simply have the `load_history_task` return a value of some sort when it's done, Which you can then capture in the dependency flow. 
