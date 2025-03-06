@@ -141,11 +141,11 @@ A successful test should look something like my screenshot below (remember to ad
 
 ### 2.3 - Configure Slack Notifications
 
-Time to add some fun Slack notifications! Below, I'll provide a `send_slack_message()` function that uses a simple Slack webhook to post a message to a dedicated channel in our class Slack space. You can paste this into your `crypto_tasks.py` file without modification: 
+Time to add some fun Slack notifications! Below, I'll provide a `send_slack_message()` function that uses a simple Slack webhook (which I've pinned in the `#airflow-chatter` channel) to post a message to a dedicated channel in our class Slack space. Go to the channel to find the pinned post, and then you can just paste the function below into your `crypto_tasks.py` file with that webhook URL included. 
 
 ```python
 def send_slack_message(message,
-                       SLACK_WEBHOOK_URL='GET THIS FROM LEARNING SUITE'):
+                       SLACK_WEBHOOK_URL='LOOK AT THE PINNED ITEM IN THE #airflow-chatter CHANNEL.'):
     """
     Sends a message to the AirflowBot in the #airflow-chatter channel.
     """
