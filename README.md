@@ -143,7 +143,7 @@ Time to add some fun Slack notifications! Below, I'll provide a `send_slack_mess
 
 ```python
 def send_slack_message(message,
-                       SLACK_WEBHOOK_URL='https://hooks.slack.com/services/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'):
+                       SLACK_WEBHOOK_URL='GET THIS FROM LEARNING SUITE'):
     """
     Sends a message to the AirflowBot in the #airflow-chatter channel.
     """
