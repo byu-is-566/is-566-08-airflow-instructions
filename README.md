@@ -301,7 +301,7 @@ Before you rush to write your code, though, I'll just note that there is a compo
 
 Got it working? Good. You should produce some nice log messages and see them in the console like my screenshot below when you have the tests running appropriately.
 
-<img src="screenshots/readme_img/initial_posts.png"  width="80%">
+<img src="screenshots/readme_img/historical_load.png"  width="80%">
 
 > [!IMPORTANT]
 > 📷 Take a screenshot of the console output showing the historical data having loaded successfully. Save it as `screenshots/task_3.3.png`.
