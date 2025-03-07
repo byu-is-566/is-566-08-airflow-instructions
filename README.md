@@ -53,6 +53,8 @@ In the Airflow UI, you can filter to the `is566` tag to remove all the example D
 
 Once you see that all tasks succeeded, CONGRATULATIONS – your Airflow instance is up and running! You’ve verified that Docker and Airflow are configured properly. 
 
+BTW, if you need to look at the logs for a given task, it's not very intuitive, but the way to find those logs is to actually click on the little red/green squares themselves. This will bring up details related to that run of the task, and one of the tabs available to you is the Logs. (Dumb interface design, IMHO, but 🤷🏼‍♂️.)
+
 > [!IMPORTANT]
 > 📷 Take a screenshot of the Airflow UI showing the successful CryptoPrint DAG run (all tasks with green squares). Save it as `screenshots/task_1.3.png`.
 
