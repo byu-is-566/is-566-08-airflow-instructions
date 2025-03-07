@@ -67,6 +67,9 @@ Now let's start building the actual data pipeline logic. We’ll write Python fu
 
 ### 2.1 - Implement `load_asset_data()`
 
+> [!TIP]
+> Before you head into your first coding task, I wanted to give you some pointers and ideas about how best to engage with ChatGPT to move through these coding tasks efficiently and in a way that will facilitate learning. So I recorded a [video](https://www.dropbox.com/scl/fi/xfjcjz9h52rbowqf287wr/How-to-use-ChatGPT-to-Help-Code.mov?rlkey=j0vnjk9sykf24brsey6mczhjq&dl=0) for you. It's less than 10 minutes and I think it'll be helpful to most. Enjoy!
+
 Open the `crypto_tasks.py` file and locate the (skeleton of the) `load_asset_data()` function. You'll need to complete this function so that it takes the cleaned crypto data (returned from the `clean_asset_data()` function) and inserts it into the `assets` table in the Postgres database.
 
 As you figure out this logic, here are some important things to consider:
