@@ -41,7 +41,7 @@ If your setup is correct, the tests should run without errors and output the fet
 
 ### 1.3 - Launch the Airflow Environment
 
-Alright. [Hold on to your butts.](https://www.youtube.com/watch?v=UjvGAYuWSUA). It’s time to start your Airflow environment using `docker compose up -d`, run from the repository folder. In theory, all the necessary containers (including a database and Airflow web UI) will start. This process may take a while, but it shouldn't be extremely long (like more than 10 minutes). If it's taking longer than that (or if you hit errors that you can't resolve), reach out for some help. I don't want you getting stuck here. Again, you can accomplish all of Tasks 2 and 3 even without the full Airflow environment running. So let's chat if necessary.
+Alright. [Hold on to your butts](https://www.youtube.com/watch?v=UjvGAYuWSUA). It’s time to start your Airflow environment using `docker compose up -d`, run from the repository folder. In theory, all the necessary containers (including a database and Airflow web UI) will start. This process may take a while, but it shouldn't be extremely long (like more than 10 minutes). If it's taking longer than that (or if you hit errors that you can't resolve), reach out for some help. I don't want you getting stuck here. Again, you can accomplish all of Tasks 2 and 3 even without the full Airflow environment running. So let's chat if necessary.
 
 **IMPORTANT**: If you see the "airflow-init-1" container startup, work for a while, then exit, that is COMPLETELY NORMAL and very much expected. That's the initialization service that starts up, checks some things, and if all is well, shuts itself down.
 
