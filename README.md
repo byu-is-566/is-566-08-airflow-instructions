@@ -85,7 +85,7 @@ After making your edits in `crypto_tasks.py`, you can un-comment the line in `te
 > [!TIP] 
 > For this task, if you see console output like the screenshot above, you're good to go. But for some future tasks, it might be useful to have access to the database admin portal to check your inserts, troubleshoot, etc. To help with this, the docker compose includes an "Adminer" container, which you can access in the browser window at http://http://localhost:8081. There, you can provide the credentials that you see in the image below to login to the database admin portal.
 >
-> <img src="screenshots/readme_img/adminer_creds.png"  width="80%">
+> <img src="screenshots/readme_img/adminer_creds.png"  width="40%">
 >
 > The crypto data tables we're using are nestled under the `cryptodata` schema. If you poke around there, you'll be able to check that the asset record you just inserted is there, as in the example screenshot below.
 >
