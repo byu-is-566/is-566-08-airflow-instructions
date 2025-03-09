@@ -463,7 +463,7 @@ First, change the way you are calling the `pull_and_clean_history_task()` task n
   >     hist_clean = pull_and_clean_history_task('dogecoin')
   > ```
 
-To this:
+You'll now call that task like this:
 
   > ```python
   >     hist_clean_list = pull_and_clean_history_task.expand(asset_id=asset_list)
@@ -477,7 +477,7 @@ Next, we'll make sure that the `hist_clean_list` gets passed to the `load_histor
   >     together =  pd.concat(list(hist_clean_list))
   > ```
 
-Just to walk through what happened above, `pd.concat()` is designed to do exactly the thing that we're trying to do, namely, stack together a bunch of dataframes with identical column structures. But inside of that function we have to explicitly convert `hist_clean_list` to a list because the `task.expand()` operation that we used earlier actually returns something called a "lazy" list, which is bascially a looser way of collecting things that may or may not be similar. Anyway, point is that we are (a) converting the lazy list of dataframes to a "real" list of dataframes that `pd.concat()` can then (b) stack together into a long single dataframe that can then be passed to the load function because it's now just a regular dataframe like that function expects.
+Just to walk through what happened above, `pd.concat()` is designed to do exactly the thing that we're trying to do, namely, stack together a bunch of dataframes with identical column structures. But inside of that function we have to explicitly convert `hist_clean_list` to a list because the `task.expand()` operation that we used earlier actually returns something called a "lazy" list, which is bascially a looser way of collecting things that may or may not be similar. Anyway, point is that we are (a) converting the lazy list of dataframes to a "real" list of dataframes that `pd.concat()` can then (b) stack together into a single, long dataframe that can then be passed to the load function because it's now just a regular dataframe like that function expects.
 
 Pretty fun, right?
 
@@ -500,11 +500,11 @@ Thanks for making it to the bottom. What a ride!
 > [!IMPORTANT]
 > 📷 Take a screenshot of the Airflow interface showing your CryptoParallel having run successfully, similar to mine above. Save it as `screenshots/task_5.2.png`.
 
-### Optional Fun
+### (Optional) Check out the Celery workers using Flower
 
 Just in case you're curious, I thought I'd point you to one more monitoring interface within the Airflow environment. The way that Airflow manages horizontal scaling to do things in parallel is with a bunch of "workers" that are assigned tasks from the scheduler's queue. The underlying framework used for those workers is called `celery`, and the framework provides an admin console that lets you peek behind the scenese to see those celery workers in action. 
 
-The admin console is called `flower` and you can access the interface using [http://localhost:5555](http://localhost:5555). (There is no login.)
+The admin console is called `flower` and you can access the interface using [http://localhost:5555](http://localhost:5555). (There is no login.) This is just another of the many containers that is running from the docker compose file to allow you to explore the full Airflow ecosystem.
 
 Just for fun, you can open up the flower console and watch while you kick off another run of your `CryptoParallel`. From `flower`, you can see lots of tasks being farmed out to th celery workers, especially under the "Tasks" tab. I've provided an example of what you can see in the screenshot below:
 
