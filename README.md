@@ -91,7 +91,7 @@ After making your edits in `crypto_tasks.py`, you can un-comment the line in `te
 >
 > <img src="screenshots/readme_img/assets_table.png"  width="80%">
 
-Okay. Back to the task. Assuming you got things working, you can take a screenshot and move on.
+Okay. Back to the task. Assuming you got things working, you can take a screenshot (of the console output not the adminer interface) and move on.
 
 > [!IMPORTANT]
 > 📷 Take a screenshot of the console output (not the adminer interface) showing the successful test run, including "1 record successfully inserted into table" at the bottom. Save it as `screenshots/task_2.1.png`.
