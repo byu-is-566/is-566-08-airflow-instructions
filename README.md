@@ -6,7 +6,7 @@ In this lab, we’ll build and deploy Airflow data pipelines that pull, transfor
 
 But before we jump in, here are some important orienting notes:
 1. Airflow is a fairly resource-hungry environment to run locally. You should be able to get away with running everything (if a little slowly) by providing 4GB of RAM to Docker, but ideally you should give it more like 8GB. (If your laptop only has 8GB of RAM, I'd recommend setting your docker RAM limit at 4GB.) Whether you do 4GB or 8GB (or more, if you've got enough to spare), I would also set Docker's memory swap settings up to 8+ GB.
-2. As I mentioned in class, it's possible that some of you simply won't be able to get this environment running successfully on your laptop. And that's okay! I've structured the assignment intentionally to allow you to get most of the work done on your own laptop without even needing to launch the full Airflow environment. (All you'll need for the first 50-70% of the assignment is a postgres database container.) So you can forge ahead and get Tasks 1, 2, and 3 finished on your own computer, then you can just do Tasks 4 and 5 in the lab if you need to. (Reach out if you have questions about this.)
+2. As I mentioned in class, it's possible that some of you simply won't be able to get this environment running successfully on your laptop. And that's okay! I've structured the assignment intentionally to allow you to get most of the work done on your own laptop without even needing to launch the full Airflow environment. (All you'll need to run for the first 50-70% of the assignment is the `postgres` container, and optionally the `adminer` container, which will let you look at the database tables.) So you can forge ahead and get Tasks 1, 2, and 3 finished on your own computer, then you can just do Tasks 4 and 5 in the lab if you need to. (Reach out if you have questions about this.)
 
 Okay. Let's get to it.
 
@@ -14,7 +14,7 @@ Okay. Let's get to it.
 
 ## Task 1: Get the Environment Up and Running
 
-First, let's make sure you have a working development environment. (For help working through this initial setup process, you might also use the [lecture recording](https://www.dropbox.com/scl/fi/i44rww220il9gpvdmjl8t/2025-03-04-Lecture-14-Airflow-Day-2.mov?rlkey=nchsb7fmscgai4r7ooskdrbko&dl=0) from our in-class walkthrough.)
+First, let's make sure you have a working development environment. (For help working through this initial setup process, you might also use portions of the the [lecture recording](https://www.dropbox.com/scl/fi/i44rww220il9gpvdmjl8t/2025-03-04-Lecture-14-Airflow-Day-2.mov?rlkey=nchsb7fmscgai4r7ooskdrbko&dl=0) from our in-class walkthrough.)
 
 ---
 
@@ -41,13 +41,13 @@ If your setup is correct, the tests should run without errors and output the fet
 
 ### 1.3 - Launch the Airflow Environment
 
-Alright. [Hold on to your butts](https://www.youtube.com/watch?v=UjvGAYuWSUA). It’s time to start your Airflow environment using `docker compose up -d`, run from the repository folder. In theory, all the necessary containers (including a database and Airflow web UI) will start. This process may take a while, but it shouldn't be extremely long (like more than 10 minutes). If it's taking longer than that (or if you hit errors that you can't resolve), reach out for some help. I don't want you getting stuck here. Again, you can accomplish all of Tasks 2 and 3 even without the full Airflow environment running. So let's chat if necessary.
+Alright. [Hold on to your butts](https://www.youtube.com/watch?v=UjvGAYuWSUA). It’s time to start your Airflow environment using `docker compose up -d`, run from the repository folder. In theory, all the necessary containers (including a database and Airflow web UI) will start. This process may take a while, but it shouldn't be extremely long (like more than 10 minutes). If it's taking longer than that (or if you hit errors that you can't resolve), reach out for some help. **I don't want you getting stuck here**. Again, you can accomplish __all__ of Tasks 2 and 3 even without the full Airflow environment running. So let's chat if necessary.
 
 **IMPORTANT**: If you see the "airflow-init-1" container startup, work for a while, then exit, that is COMPLETELY NORMAL and very much expected. That's the initialization service that starts up, checks some things, and if all is well, shuts itself down.
 
 After the system finishes booting (which _will_ take longer than the terminal will make you think; remember - you can look at the webserver logs and watch for the "Listening on 0.0.0.0:8080" message). Once you see that message, navigate to http://localhost:8080 in your browser. You should see the Airflow web interface, where you can log in with username/password: airflow/airflow. 
 
-In the Airflow UI, you can filter to the `is566` tag to remove all the example DAGs from view, which should make it easy to locate and open the DAG named “CryptoPrint”. Run the DAG manually (clicking the play button ►). You can then watch it run with glee until you see all the boxes turn dark green, indicating a successful run of all three tasks in the DAG. You should see something similar to my screenshot below.
+In the Airflow UI, you can filter to the `is566` tag (using the _Filter DAGs by tag_ search box and NOT the _Search DAGs_ search box...I know...dumb UI choice) to remove all the example DAGs from view, which should make it easy to locate and open the DAG named “CryptoPrint”. Run the DAG manually (clicking the play button ►). You can then watch it run with glee until you see all the boxes turn dark green, indicating a successful run of all three tasks in the DAG. You should see something similar to my screenshot below.
 
 <img src="screenshots/readme_img/first_dag.png"  width="80%">
 
@@ -68,7 +68,7 @@ Now let's start building the actual data pipeline logic. We’ll write Python fu
 ### 2.1 - Implement `load_asset_data()`
 
 > [!TIP]
-> Before you head into your first coding task, I wanted to give you some pointers and ideas about how best to engage with ChatGPT to move through these coding tasks efficiently and in a way that will facilitate learning. So I recorded a [video](https://www.dropbox.com/scl/fi/xfjcjz9h52rbowqf287wr/How-to-use-ChatGPT-to-Help-Code.mov?rlkey=j0vnjk9sykf24brsey6mczhjq&dl=0) for you. It's less than 10 minutes and I think it'll be helpful to most. Enjoy!
+> Before you head into your first coding task, I wanted to give you some pointers and ideas about **how best to engage with ChatGPT** to move through these coding tasks efficiently and in a way that will facilitate learning. So I recorded a [video](https://www.dropbox.com/scl/fi/xfjcjz9h52rbowqf287wr/How-to-use-ChatGPT-to-Help-Code.mov?rlkey=j0vnjk9sykf24brsey6mczhjq&dl=0) for you. It's less than 10 minutes and I think it'll be helpful to most. Enjoy!
 
 Open the `crypto_tasks.py` file and locate the (skeleton of the) `load_asset_data()` function. You'll need to complete this function so that it takes the cleaned crypto data (returned from the `clean_asset_data()` function) and inserts it into the `assets` table in the Postgres database.
 
@@ -87,12 +87,14 @@ After making your edits in `crypto_tasks.py`, you can un-comment the line in `te
 >
 > <img src="screenshots/readme_img/adminer_creds.png"  width="80%">
 >
-> The crypto data tables we're using are nestled under the `cryptodata` schema. If you poke around there, you'll be able to check that the asset record you just inserted is there, as in the screenshot below.
+> The crypto data tables we're using are nestled under the `cryptodata` schema. If you poke around there, you'll be able to check that the asset record you just inserted is there, as in the example screenshot below.
+>
+> <img src="screenshots/readme_img/assets_table.png"  width="80%">
 
 Okay. Back to the task. Assuming you got things working, you can take a screenshot and move on.
 
 > [!IMPORTANT]
-> 📷 Take a screenshot of the console output showing the successful test run, including "1 record successfully inserted into table" at the bottom. Save it as `screenshots/task_2.1.png`.
+> 📷 Take a screenshot of the console output (not the adminer interface) showing the successful test run, including "1 record successfully inserted into table" at the bottom. Save it as `screenshots/task_2.1.png`.
 
 --- 
 
@@ -135,7 +137,7 @@ def compare_recent_crypto_record(asset_id, new_price, host='postgres'):
 
 When you have it working, you can add a new test case to the test script to call this function as a part of your test flow. (Note that in order to provide a meaningful comparison, `compare_recent_crypto_record()` needs to be called after cleaning but _before_ loading an asset's pricing information.)
 
-A successful test should look something like my screenshot below (remember to add some `logging.info()` output in your function so you can see something when it runs).
+A successful test should look something like my screenshot below (remember to add some `logging.info()` output in your function so you can see something when it runs, both here locally as well as in the Airflow interface later).
 
 <img src="screenshots/readme_img/comparison_done.png"  width="80%">
 
@@ -147,6 +149,8 @@ A successful test should look something like my screenshot below (remember to ad
 ### 2.3 - Configure Slack Notifications
 
 Time to add some fun Slack notifications! Below, I'll provide a `send_slack_message()` function that uses a simple Slack webhook (which I've pinned in the `#airflow-chatter` channel) to post a message to a dedicated channel in our class Slack space. Go to the channel to find the pinned post, and then you can just paste the function below into your `crypto_tasks.py` file with that webhook URL included. 
+
+(Pro tip: join the `#airflow-chatter` channel but mute it completely. It's going to be _noisy_ in there.)
 
 ```python
 def send_slack_message(message,
@@ -184,9 +188,9 @@ A bland version of a formatted pricing update message might look like this:
 > This is a **-0.26%** difference from my last recorded price ($89,849.04 on 2025-03-06 07:00:09).
 > With ❤️, Rogue 1
 
-Other than the above requirements, you can format your message in whatever way you want, so feel free to have fun with this. You don't need to sign it with your real name if you don't want to. (But please don't abuse this ability to post anonymous messages to the whole class...this should be _harmless_ fun.)
+Other than the above requirements, you can format your message in whatever way you want, so feel free to have fun with this. You don't need to sign it with your real name if you don't want to. (But please don't abuse this ability to post anonymous messages to the whole class...this should be _harmless_ fun. 😉)
 
-If you provide a good log entry in your formatting function, you'll be able to iterate quickly to get the formatting right, viewing the result right in the console. (That would be much better than testing your formatting with a bunch of messages sent to the Slack channel!)
+If you provide a good log entry in your formatting function, you'll be able to iterate quickly to get the formatting right, viewing the result right in the console. (That would be much better than testing your formatting with a bunch of messages sent to the Slack channel!) Note, however, that your console will likely ignore much of the markdown-based formatting that Slack will respect.
 
 Alrighty. Function stub, coming in hot:
 
@@ -204,7 +208,7 @@ def format_slack_message(asset_obs, comparison_result):
     """
 ```
 
-When you have everything looking lovely, you can then add the `send_slack_message()` function to the  test script and share your message with everyone. You should then capture a screenshot like the one I've included below, with your console window alongside or overlayed with your slack window, showing that your console output matches (more or less) the message you sent to the slack channel.
+When you have everything looking lovely, you can then add the `send_slack_message()` function to the test script and share your message with everyone. You should then capture a screenshot like the one I've included below, with your console window alongside or overlayed with your slack window, showing that your console output matches (more or less) the message you sent to the slack channel.
 
 <img src="screenshots/readme_img/slack_message.png"  width="80%">
 
@@ -228,7 +232,8 @@ Like Task 2, this task will be completed exclusively within the `crypto_tasks.py
 This function will make a slightly different API call to the same API service that we used in the previous task. This means that you can get most of the function written by copying the content of the `pull_asset_data()` function and modifying it. The primary modifications include:
 - Use the API documentation [here](https://docs.coincap.io) to assemble a different URL string. You'll find the format and potential parameters under the `GET /assets/{{id}}/history` heading on that page. In fact, the example on that page (with the `interval=d1`) is essentially the exact URL you'll be using (though you'll fill in the `asset_id` dynamically).
 - Because of the way the data is returned from this endpoint (it doesn't actually include the `asset_id` that was used to request the data), you'll have to manually assemble the return object to include the `asset_id`. The return object will be a dict with 3 top-level items (`asset_id`, `data`, and `timestamp`), as shown in the function stub below.
-- Lastly, because the data will come back with 365 days' worth of data, it's sort of annoying to write a log message. So I'll just provide the `logging.info()` command for you here:
+- Lastly, because the data will come back with 365 days' worth of data, it's sort of annoying to print in a reasonably short log message. So I'll just provide the `logging.info()` command for you here:
+
 > ```python
 > logging.info(
 >    f"Historical API Response (first 3 records): \n", 
@@ -237,7 +242,7 @@ This function will make a slightly different API call to the same API service th
 > ```
 
 > [!TIP]
-> One more pro tip: You can create a free account on Postman.com to experiment a bit with API calls. In fact, the CoinCap API documentation has a handy "Open in Postman" button that will populate their documentation functions in a Postman workspace for you, which is an excellent way to test and get familiar with how the data comes back. The screenshot below shows my test of the history endpoint.
+> One more pro tip: You can create a free account on [Postman.com](Postman.com) to experiment a bit with API calls. In fact, the CoinCap API documentation has a handy "Open in Postman" button that will populate their documentation functions in a Postman workspace for you, which is an excellent way to test and get familiar with how the data comes back. The screenshot below shows my test of the history endpoint.
 > <img src="screenshots/readme_img/postman.png"  width="80%">
 
 Okay. Use the suggestions above to fill in the function stub below. Then add a test function call in the test script, and capture and save a screenshot.
@@ -299,12 +304,12 @@ Get the function working, then take a screenshot of the pandas preview in the co
 
 ### 3.3 - Implement `load_historical_asset_pricing()`
 
-Now we just load the historical data into the `historical_asset_pricing` table in the database. Again, this load function will be largely the same as the `load_asset_data()` function from Task 2, so I would start by copying the logic from that one and the modifying it as needed. For this function, you'll need to assemble the query from a dataframe instead of a dictionary. You'll also be doing a much larger insert (with 365 records instead of just one. If you poke around a bit online (and/or ask Chat for some syntax help), you'll find that you can use the `cursor.executemany()` approach to actually do a large insert with a single command. That requires you to assemble a "list of tuples" from your dataframe, which can then be passed as a single object to fill in the `VALUES` in the insert query.
+Now we just load the historical data into the `historical_asset_pricing` table in the database. Again, this load function will be largely the same as the `load_asset_data()` function from Task 2, so I would start by copying the logic from that one and the modifying it as needed. For this function, you'll need to assemble the query from a dataframe instead of a dictionary. You'll also be doing a much larger insert (with 365 records instead of just one). If you poke around a bit online (and/or ask Chat for some syntax help), you'll find that you can use the `cursor.executemany()` approach to actually do a large insert with a single command. That requires you to assemble a "list of tuples" from your dataframe, which can then be passed as a single object to fill in the `VALUES` in the insert query.
 
 Before you rush to write your code, though, I'll just note that there is a composite primary key constraint applied to this `historical_asset_pricing` table (which you can examine in the `sql/01_create_db.sql` script). This is to prevent a lot of duplication for a given asset's pricing history if you happen to run the query for the same asset more than once while testing. This means that you'll need to account for this in your query so that the database doesn't complain about duplicate primary keys.
 
 > [!TIP]
-> Did you know that Postgres doesn't support `UPSERT`s? I didn't either until I wrote this assignment. Instead you can look into the `ON CONFLICT` functionality.
+> Did you know that Postgres doesn't support `UPSERT`s? I didn't either until I wrote this assignment. 🤷🏼‍♂️ Instead, you can look into the `ON CONFLICT` functionality.
 
 Got it working? Good. You should produce some nice log messages and see them in the console like my screenshot below when you have the tests running appropriately.
 
@@ -324,7 +329,7 @@ I've placed them in `crypto_utils/analysis_functions.py`, so you'll just need to
 <img src="screenshots/readme_img/analysis_functions.png"  width="80%">
 
 > [!IMPORTANT]
-> 📷 Take a screenshot of the console output showing the analysis function running successfully. Save it as `screenshots/task_3.4.png`.
+> 📷 Take a screenshot of the console output showing both analysis functions running successfully. Save it as `screenshots/task_3.4.png`.
 
 --- 
 
@@ -362,7 +367,7 @@ Time for some more fun with Slack! Make another DAG (call it `03-CryptoSlack.py`
 
 Specifically, you're going to have a total of 5 tasks that do the following:
 1. Pull the asset data for a given asset_id (similar to the first two DAGs)
-2. Pull the asset data for a given asset_id (similar to the first two DAGs)
+2. Clean the asset data for a given asset_id (similar to the first two DAGs)
 3. Load the asset data for a given asset_id (similar to the DAG from 4.1)
 4. Use the `compare_recent_crypto_record()` function to pull comparison information between the current price and the last updated price from the database.
 5. One task that uses both the `format_slack message()` and `send_slack_message()` functions to send your messages to the Slack channel.
@@ -384,11 +389,11 @@ After you get your DAG graph looking like mine in the screenshot above, you can 
 
 ### 4.3 - Schedule your `CryptoSlack` DAG
 
-Just for fun, go ahead and make a change to one line of the `03-CryptoSlack.py` file to setup it up to run every 30 or 60 seconds. You'll accomplish this simply by changing the `schedule_interval` parameter in your `@DAG()` decorator definition to be something other than `None`. You can do a once-a-minute schedule using some cron job syntax (which has a maximum granularity of minutes), or you can use a timedelta operation to get it down to every 30 seconds. Your choice.
+Just for fun, go ahead and make a change to one line of the `03-CryptoSlack.py` file to setup it up to run every 30 or 60 seconds. You'll accomplish this simply by changing the `schedule_interval` parameter in your `@DAG()` decorator definition to be something other than `None`. You can do a once-a-minute schedule using some cron job syntax (which has a maximum granularity of minutes), or you can use a `timedelta` operation to get it down to every 30 seconds. Your choice.
 
 Once you save your DAG and Airflow recognizes that it's scheduled, it'll probably start firing off. Let it run for a few minutes so you can show that the logic is all working properly (especially that there are different percentage change values each time it fires). Then (and this is **VERY IMPORTANT**), please deactivate the DAG. 🙂 You can do this using the toggle in the Airflow interface (or I guess you could revert your change in the python file to remove the schedule).
 
-Again, just to reiterate, **please don't leave your DAG running** while you move on. We don't want Slack to blacklist us.
+Again, just to reiterate, **please don't leave your DAG running** while you move on. We don't want Slack or CoinCap to blacklist us.
 
 You may need to do some searching and filtering in Slack if lots of people are working on this at the time you had your DAG running, but hopefully you can snag a screenshot sort of similar to mine below that shows that you've let your DAG run on a schedule for a bit.
 
@@ -423,7 +428,7 @@ After you're done, you'll probably be looking at something pretty close to the s
 This task involves creating a slightly modified version of the DAG you just built that uses Airflow's horizontal scalability to load and analyze the historical data in parallel. The idea is to demonstrate Airflow’s ability to run independent tasks concurrently to speed up the pipeline. 
 
 Because this is new (and FUN!), I'll give you some more detailed guidance. Your DAG will have four tasks:
-1. `pull_and_clean_history_task()`: To make this parallel stuff work, you'll need to combine the pulling and cleaning of historical data into a single task. Remember that these tasks are just special functions, so you can absolutely call more than one of our crypto_utils functions within the same task. The task should return the cleaned historical data for the requested `asset_id`.
+1. `pull_and_clean_history_task()`: To make this parallel stuff work, you'll need to combine the pulling and cleaning of historical data into a single task. Remember that these tasks are just special functions, so you can absolutely call more than one of our `crypto_utils` functions within the same task. The task should return the cleaned historical data for the requested `asset_id`.
 2. `load_history_task()`: this is the same task as you used in 5.1 above, so nothing special here. The task should receive cleaned historical data and load it into the table. 
 3. `moving_ave_task()`: This task just runs the `calculate_7_day_moving_average()` function that we tested in Task 3.4. Note that you'll need to import these analysis functions from the `analysis_functions.py` file to make them available to the DAG.
 4. `annual_vol_task()`: Just like the previous one, this task is just a wrapper for the `calculate_annualized_volatility()` function from `analysis_functions.py`.
@@ -436,7 +441,7 @@ Once you have a DAG graph that looks like the one in the image below, you can ju
 
 Alright, now we're going to have some fun. Within the same DAG file, we're going to convert the existing flow to one that will operate in parallel at key points in the workflow. It turns out that the API we're using has historical crypto pricing information available for a few thousand different currencies. We're not going to gather data for all of them, but we'll use this as an opportunity to demonstrate how to scale a data pipeline horizontally. 
 
-Let's collect historical pricing data for the top 6 crypto currencies (in terms of market cap). Those currencies are contained in the list below, which you can paste into your script:
+Let's collect historical pricing data for the top 6 crypto currencies (in terms of market cap). Those currencies are contained in the list below, which you can just paste into your DAG script:
 
 ```python
 asset_list = [
@@ -471,7 +476,7 @@ Next, we'll make sure that the `hist_clean_list` gets passed to the `load_histor
   >     together =  pd.concat(list(hist_clean_list))
   > ```
 
-Just to walk through what happened above, `pd.concat()` is designed to do exactly the thing that we're trying to do, namely, stack together a bunch of dataframes with identical column structures. But inside of that function we have to explicitly convert `hist_clean_list` to a list because the `task.expand()` operation that we used earlier actually returns something called a "lazy" list, which is bascially a looser way of collecting things that may or may not be similar. Anyway, point is that we are (a) converting the lazy list of dataframes to a "real" list of dataframes that `pd.concat()` can then stack together into a long single dataframe that can then be passed to the load function because it's now just a regular dataframe like that function expects.
+Just to walk through what happened above, `pd.concat()` is designed to do exactly the thing that we're trying to do, namely, stack together a bunch of dataframes with identical column structures. But inside of that function we have to explicitly convert `hist_clean_list` to a list because the `task.expand()` operation that we used earlier actually returns something called a "lazy" list, which is bascially a looser way of collecting things that may or may not be similar. Anyway, point is that we are (a) converting the lazy list of dataframes to a "real" list of dataframes that `pd.concat()` can then (b) stack together into a long single dataframe that can then be passed to the load function because it's now just a regular dataframe like that function expects.
 
 Pretty fun, right?
 
@@ -491,14 +496,39 @@ Hopefully that worked for you and you're seeing green squares. If so, you can sn
 
 Thanks for making it to the bottom. What a ride!
 
+> [!IMPORTANT]
+> 📷 Take a screenshot of the Airflow interface showing your CryptoParallel having run successfully, similar to mine above. Save it as `screenshots/task_5.2.png`.
+
+### Optional Fun
+
+Just in case you're curious, I thought I'd point you to one more monitoring interface within the Airflow environment. The way that Airflow manages horizontal scaling to do things in parallel is with a bunch of "workers" that are assigned tasks from the scheduler's queue. The underlying framework used for those workers is called `celery`, and the framework provides an admin console that lets you peek behind the scenese to see those celery workers in action. 
+
+The admin console is called `flower` and you can access the interface using [http://localhost:5555](http://localhost:5555). (There is no login.)
+
+Just for fun, you can open up the flower console and watch while you kick off another run of your `CryptoParallel`. From `flower`, you can see lots of tasks being farmed out to th celery workers, especially under the "Tasks" tab. I've provided an example of what you can see in the screenshot below:
+
+<img src="screenshots/readme_img/flower.png"  width="80%">
+
+(No need to save your own version of that screenshot; this was just for your own edification. Because I think it's cool.)
+
+Okay. Now we're really, actually, truely, done. 🙂
+
 ## Submission Instructions
 
 Ensure you have completed all tasks and saved the following screenshots:
-- `task_1.png`
-- `task_2.png`
-- `task_3.png`
-- `task_4a.png`
-- `task_4b.png`
-- `task_5.png`
+- `task_1.2.png`
+- `task_1.3.png`
+- `task_2.1.png`
+- `task_2.2.png`
+- `task_2.3.png`
+- `task_3.1.png`
+- `task_3.2.png`
+- `task_3.3.png`
+- `task_3.4.png`
+- `task_4.1.png`
+- `task_4.2.png`
+- `task_4.3.png`
+- `task_5.1.png`
+- `task_5.2.png`
 
 Commit all code and screenshots to your repository and push your changes. 
