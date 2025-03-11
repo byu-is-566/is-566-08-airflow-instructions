@@ -27,7 +27,7 @@ Head over to the [CoinCap API Key page](https://coincap.io/api-key) and grab a f
 
 ### 1.2 - Create and Activate a Python Virtual Environment
 
-Create a `Conda` environment for this project (I used python 3.12.). After activating, install the python libraries found in `requirements.txt`. 
+Create a `Conda` environment for this project (I used python 3.12.). After activating, install the python libraries found in `requirements.txt`. If you run into errors here (usually with `pyscopg2`), you can try to install the `pyscopg2-binary` that it suggests. If you get other errors with that or any of the other python libraries you're installing, you can try installing an earlier python version (`conda install python=3.10`, for example). Usually some combination of those will get it done.
 
 Now you can make sure you're ready to go by running the test script (`test_crypto_tasks.py`) to verify everything is set up correctly. This test script just runs some simple unit tests for the crypto pipeline functions found in `crypto_tasks.py`, and you'll be adding additional tests over the course of the first 3 tasks. 
 
