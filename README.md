@@ -375,6 +375,9 @@ Specifically, you're going to have a total of 5 tasks that do the following:
 
 Before you launch your new DAG, though, pay attention to the dependencies established at the bottom of the DAG. The purpose of this DAG is to help you think very carefully about the order in which these tasks need to be accomplished, and to use the logical flow of the tasks and their returned results to establish the correct order. (Think in particular about when the comparison task needs to run and how to establish the proper sequence.)
 
+> [!TIP]
+> If you're having trouble figuring out the dependencies for this DAG, you're in luck! I recorded a [screencast video](https://www.dropbox.com/scl/fi/q92equvuzijzlf881hao6/airflow-dependencies.mov?rlkey=23p2zh7290h4es9xrwvwh7b38&dl=0) in which I explain things in a detail. Enjoy!
+
 You may have to get a bit tricky with the dependencies to make sure that, for example, the comparison happens before the new data is loaded. This is easier when the functions have return statements because then Airflow will recognize that as a step that needs to be completed before the next one. In the case of the Slack and load tasks (where you probably aren't returning anything), Airflow is going to forge ahead and potentially get them out of order. There are a few different ways to be explicit about this, but the easiest way is probably to create a return statement even if it's not really necessary. That gives you an "event" to work with that you can then incorporate to establish the proper dependency and order of your tasks.
 
 You can always check to see the effect of your changes on the dependency order by looking at the "Graph" tab in the DAG details (see the screenshot below). This will show you what Airflow has understood as the order of dependencies, and will give you something to check as you play around with different approaches.
