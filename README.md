@@ -494,7 +494,7 @@ To confirm that you have this right (and to get ready to run everything with our
 
 The `.expand()` functionality doesn't get represented graphically by Airflow (though you may notice that there are now square brackets next to the `pull_and_clean_history_task() []` on the left). But the dependencies implied by the many copies of our analysis functions are now fanning out in one big simultaneous level.
 
-Okay. Ready for lauch? 3...2...1...go!
+Okay. Ready for launch? 3...2...1...go!
 
 Hopefully that worked for you and you're seeing green squares. If so, you can snag a screenshot, pat yourself on the back, and call this one DONE.
 
