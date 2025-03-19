@@ -505,7 +505,7 @@ Thanks for making it to the bottom. What a ride!
 
 ### (Optional) Check out the Celery workers using Flower
 
-Just in case you're curious, I thought I'd point you to one more monitoring interface within the Airflow environment. The way that Airflow manages horizontal scaling to do things in parallel is with a bunch of "workers" that are assigned tasks from the scheduler's queue. The underlying framework used for those workers is called `celery`, and the framework provides an admin console that lets you peek behind the scenese to see those celery workers in action. 
+Just in case you're curious, I thought I'd point you to one more monitoring interface within the Airflow environment. The way that Airflow manages horizontal scaling to do things in parallel is with a bunch of "workers" that are assigned tasks from the scheduler's queue. The underlying framework used for those workers is called `celery`, and the framework provides an admin console that lets you peek behind the scenes to see those celery workers in action. 
 
 The admin console is called `flower` and you can access the interface using [http://localhost:5555](http://localhost:5555). (There is no login.) This is just another of the many containers that is running from the docker compose file to allow you to explore the full Airflow ecosystem.
 
